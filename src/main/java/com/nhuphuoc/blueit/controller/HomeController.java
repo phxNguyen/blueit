@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
+    @GetMapping("/home")
+    public String home(Model model){
 
-    @GetMapping("/")
-    public String home(Model model, HttpServletRequest request){
-        model.addAttribute("message","Hello moi nguoi");
-
-       return "index.html";
+        model.addAttribute("title","This is attribute added from controller");
+        return "home";
     }
+
 
 }

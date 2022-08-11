@@ -2,12 +2,14 @@ package com.nhuphuoc.blueit.controller;
 
 import com.nhuphuoc.blueit.entity.Link;
 import com.nhuphuoc.blueit.repository.LinkRepository;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/links")
 public class LinkController {
 
@@ -22,6 +24,12 @@ public class LinkController {
 
         return linkRepository.findAll();
 
+    }
+
+    @GetMapping("/foo")
+    public String foo(Model model){
+        model.addAttribute("pageTitle","this is page Foo");
+        return "foo";
     }
 
 
