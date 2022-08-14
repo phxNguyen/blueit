@@ -20,16 +20,12 @@ public class LinkController {
     }
 
     @GetMapping("/")
-    public List<Link> list(){
+    public String list(Model model){
 
-        return linkRepository.findAll();
+        model.addAttribute("links", linkRepository.findAll());
 
-    }
+        return "link/list";
 
-    @GetMapping("/foo")
-    public String foo(Model model){
-        model.addAttribute("pageTitle","this is page Foo");
-        return "foo";
     }
 
 
