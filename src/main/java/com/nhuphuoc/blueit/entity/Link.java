@@ -4,12 +4,14 @@ import com.nhuphuoc.blueit.service.BeanUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.hibernate.validator.constraints.URL;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
@@ -25,8 +27,12 @@ public class Link extends Auditable{
     @Id @GeneratedValue
     private Long id;
     @NonNull
+    @NotEmpty(message = "Please enter a title")
     private String title;
+
     @NonNull
+    @NotEmpty(message = "Please enter a url")
+    @URL(message = "Please enter a valid url")
     private String url;
 
     // relationship with Comment

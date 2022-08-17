@@ -2,16 +2,24 @@ package com.nhuphuoc.blueit.controller;
 
 import com.nhuphuoc.blueit.entity.Link;
 import com.nhuphuoc.blueit.repository.LinkRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/")
 public class LinkController {
 
+    private static final Logger logger = LoggerFactory.getLogger(LinkController.class);
     private final LinkRepository linkRepository;
 
     public LinkController(LinkRepository linkRepository) {
@@ -34,6 +42,7 @@ public class LinkController {
         Optional<Link> link = linkRepository.findById(id);
         if(link.isPresent()){
             model.addAttribute("link", link.get());
+            model.addAttribute("success", model.containsAttribute("success"));
             return "link/view";
         }else{
             return "redirect:/";
@@ -41,15 +50,27 @@ public class LinkController {
 
     }
 
-    @PutMapping("/{id}")
-    public Link update(@PathVariable Long id, @ModelAttribute Link link){
-        return linkRepository.save(link);
+    @GetMapping("/link/submit")
+    public String newLinkForm(Model model) {
+        model.addAttribute("link",new Link());
+        return "link/submit";
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        linkRepository.deleteById(id);
-
+    @PostMapping("/link/submit")
+    public String createLink(@Valid Link link, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if( bindingResult.hasErrors() ) {
+            logger.info("Validation errors were found while submitting a new link.");
+            model.addAttribute("link",link);
+            return "link/submit";
+        } else {
+            // save our link
+            linkRepository.save(link);
+            logger.info("New link was saved successfully");
+            redirectAttributes
+                    .addAttribute("id",link.getId())
+                    .addFlashAttribute("success",true);
+            return "redirect:/link/{id}";
+        }
     }
 
 
