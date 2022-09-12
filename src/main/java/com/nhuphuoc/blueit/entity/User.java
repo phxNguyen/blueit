@@ -42,6 +42,27 @@ public class User  implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+   
+
+
+    public User(@NonNull String email, @NonNull String password, @NonNull boolean enabled, Set<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.roles = roles;
+    }
+
+    public User(String s, String secret, boolean b) {
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public void addRoles(Set<Role> roles) {
+        roles.forEach(this::addRole);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
@@ -49,7 +70,16 @@ public class User  implements UserDetails {
 
 
 
-    //lay email lam usrname
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    //lay email lam username
     @Override
     public String getUsername() {
         return email;

@@ -1,5 +1,6 @@
 package com.nhuphuoc.blueit.security;
 
+import org.springframework.boot.actuate.autoconfigure.security.reactive.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,12 +22,21 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http
-            .authorizeRequests()
+      .authorizeRequests()
+                .requestMatchers(EndpointRequest.to("info")).permitAll()
+                .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
+                .antMatchers("/actuator/").hasRole("ADMIN")
                 .antMatchers("/").permitAll()
-                .antMatchers("/link/submit").hasRole("ADMIN")
-            .and()
-            .formLogin();
+                .antMatchers("/link/submit").hasRole("USER")
+                .antMatchers("/h2-console/**").permitAll()
+                .and()
+                .formLogin()
+                .loginPage("/login").permitAll()
+                .usernameParameter("email")
+                .and()
+                .logout()
+                .and()
+                .rememberMe();
         return http.build();
     }
 

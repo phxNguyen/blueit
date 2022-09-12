@@ -20,4 +20,6 @@ public class Vote extends Auditable{
 
     // user
     // link
+
+
 }
